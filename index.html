@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Camera Access and Upload</title>
+</head>
+<body>
+
+    <!-- Button to trigger camera -->
+    <input type="file" accept="image/*" capture="camera" id="cameraInput" name="cameraInput">
+
+    <!-- Image preview -->
+    <img id="imagePreview" style="display:none;">
+
+    <script>
+        const cameraInput = document.getElementById('cameraInput');
+        const imagePreview = document.getElementById('imagePreview');
+
+        cameraInput.addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                let reader = new FileReader();
+
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                };
+
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+    </script>
+
+</body>
+</html>
+
