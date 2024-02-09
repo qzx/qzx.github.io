@@ -11,10 +11,8 @@
             height: 100vh;
             margin: 0;
         }
-        /* Style the input to look like a button */
-        #cameraInput {
-            -webkit-appearance: none;
-            appearance: none;
+        /* Custom button style */
+        .button {
             background-color: #007bff;
             color: white;
             padding: 15px 25px;
@@ -23,23 +21,29 @@
             border-radius: 5px;
             cursor: pointer;
             outline: none;
+            text-align: center;
         }
-        #cameraInput:hover {
+        .button:hover {
             background-color: #0056b3;
         }
-        /* Responsive image style */
+        /* Hide the actual input but keep it functional */
+        #cameraInput {
+            display: none;
+        }
         #imagePreview {
             display: none;
-            max-width: 90%; /* Prevents the image from being too wide on larger screens */
+            max-width: 90%;
             height: auto;
-            margin-top: 20px; /* Adds some space above the image */
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Button to trigger camera -->
+    <!-- Hidden file input -->
     <input type="file" accept="image/*" capture="camera" id="cameraInput" name="cameraInput">
+    <!-- Custom styled button that triggers the hidden file input -->
+    <button class="button" id="triggerCamera">Take Photo</button>
 
     <!-- Image preview -->
     <img id="imagePreview">
@@ -47,6 +51,12 @@
     <script>
         const cameraInput = document.getElementById('cameraInput');
         const imagePreview = document.getElementById('imagePreview');
+        const triggerCameraButton = document.getElementById('triggerCamera');
+
+        // When the custom button is clicked, trigger the hidden file input click
+        triggerCameraButton.addEventListener('click', function() {
+            cameraInput.click();
+        });
 
         cameraInput.addEventListener('change', function(e) {
             if (e.target.files && e.target.files[0]) {
