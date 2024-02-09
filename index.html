@@ -11,7 +11,6 @@
             height: 100vh;
             margin: 0;
         }
-        /* Custom button style */
         .button {
             background-color: #007bff;
             color: white;
@@ -22,11 +21,11 @@
             cursor: pointer;
             outline: none;
             text-align: center;
+            margin-top: 10px; /* Added some space between buttons */
         }
         .button:hover {
             background-color: #0056b3;
         }
-        /* Hide the actual input but keep it functional */
         #cameraInput {
             display: none;
         }
@@ -36,24 +35,29 @@
             height: auto;
             margin-top: 20px;
         }
+        /* Hide the upload button initially */
+        #uploadButton {
+            display: none;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Hidden file input -->
     <input type="file" accept="image/*" capture="camera" id="cameraInput" name="cameraInput">
-    <!-- Custom styled button that triggers the hidden file input -->
     <button class="button" id="triggerCamera">Take Photo</button>
 
     <!-- Image preview -->
     <img id="imagePreview">
 
+    <!-- Upload button, shown after image is selected -->
+    <button class="button" id="uploadButton">Upload Photo</button>
+
     <script>
         const cameraInput = document.getElementById('cameraInput');
         const imagePreview = document.getElementById('imagePreview');
         const triggerCameraButton = document.getElementById('triggerCamera');
+        const uploadButton = document.getElementById('uploadButton');
 
-        // When the custom button is clicked, trigger the hidden file input click
         triggerCameraButton.addEventListener('click', function() {
             cameraInput.click();
         });
@@ -65,9 +69,37 @@
                 reader.onload = function(e) {
                     imagePreview.src = e.target.result;
                     imagePreview.style.display = 'block';
+                    uploadButton.style.display = 'inline-block'; // Show the upload button
                 };
 
                 reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+
+        uploadButton.addEventListener('click', function() {
+            const file = cameraInput.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append('image', file); // Adjust the 'image' key according to your API
+
+                // Replace URL with your upload endpoint
+                const url = 'http://127.0.0.1/imageupload/0ccde228-d168-43f2-9604-0da2cb00476c';
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', url, true);
+
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        alert('Upload successful');
+                    } else {
+                        alert('Upload failed');
+                    }
+                };
+
+                xhr.onerror = function () {
+                    alert('Upload failed. Please check your connection and try again.');
+                };
+
+                xhr.send(formData);
             }
         });
     </script>
