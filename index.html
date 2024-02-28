@@ -1,109 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Camera Access and Upload</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .button {
-            background-color: #007bff;
-            color: white;
-            padding: 15px 25px;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            outline: none;
-            text-align: center;
-            margin-top: 10px; /* Added some space between buttons */
-        }
-        .button:hover {
-            background-color: #0056b3;
-        }
-        #cameraInput {
-            display: none;
-        }
-        #imagePreview {
-            display: none;
-            max-width: 90%;
-            height: auto;
-            margin-top: 20px;
-        }
-        /* Hide the upload button initially */
-        #uploadButton {
-            display: none;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go WebAssembly PWA</title>
+    <link rel="manifest" href="manifest.json">
+    <script type="module" src="wasm_exec.js"></script>
+    <script type="module" src="app.js"></script>
 </head>
 <body>
-
-    <input type="file" accept="image/*" capture="camera" id="cameraInput" name="cameraInput">
-    <button class="button" id="triggerCamera">Take Photo</button>
-
-    <!-- Image preview -->
-    <img id="imagePreview">
-
-    <!-- Upload button, shown after image is selected -->
-    <button class="button" id="uploadButton">Upload Photo</button>
-
-    <script>
-        const cameraInput = document.getElementById('cameraInput');
-        const imagePreview = document.getElementById('imagePreview');
-        const triggerCameraButton = document.getElementById('triggerCamera');
-        const uploadButton = document.getElementById('uploadButton');
-
-        triggerCameraButton.addEventListener('click', function() {
-            cameraInput.click();
-        });
-
-        cameraInput.addEventListener('change', function(e) {
-            if (e.target.files && e.target.files[0]) {
-                let reader = new FileReader();
-
-                reader.onload = function(e) {
-                    imagePreview.src = e.target.result;
-                    imagePreview.style.display = 'block';
-                    uploadButton.style.display = 'inline-block'; // Show the upload button
-                };
-
-                reader.readAsDataURL(e.target.files[0]);
-            }
-        });
-
-        uploadButton.addEventListener('click', function() {
-            const file = cameraInput.files[0];
-            if (file) {
-                const formData = new FormData();
-                formData.append('image', file); // Adjust the 'image' key according to your API
-
-                // Replace URL with your upload endpoint
-                const url = 'http://127.0.0.1:8080/imageupload/0ccde228-d168-43f2-9604-0da2cb00476c';
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', url, true);
-
-                xhr.onload = function () {
-                    if (xhr.status === 200) {
-                        alert('Upload successful');
-                    } else {
-                        alert('Upload failed');
-                    }
-                };
-
-                xhr.onerror = function () {
-                    alert('Upload failed. Please check your connection and try again.');
-                };
-
-                xhr.send(formData);
-            }
-        });
+    <h1>Hello, Go WebAssembly PWA!</h1>
+    <button id="callGoButton">Call Go Function</button>
+    <button id="effAroundButton">Eff around</button>
+    <input type="text" id="userInput" placeholder="Enter something...">
+    <button id="processInputButton">Process Input</button>
+    <p id="result"></p>
+    
+    <script type="module">
+        window.onload = () => MyApp.init();
     </script>
-
 </body>
 </html>
 
