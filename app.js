@@ -10,31 +10,6 @@ window.addEventListener('beforeinstallprompt', (e) => {
 });
 
 
-document.querySelector('#imageInput').addEventListener(
-        'change',
-        function() {
-          const reader = new FileReader()
-          reader.onload = function() {
-            // Converting the image to Unit8Array
-            const arrayBuffer = this.result,
-              array = new Uint8Array(arrayBuffer)
-            // Call wasm exported function
-            const txt = convertImage(
-              array,
-              JSON.stringify({
-                fixedWidth: 100,
-                colored: true,
-                fixedHeight: 40,
-              })
-            )
-            // Showing the ascii image in the browser
-            const cdiv = document.getElementById('console')
-            cdiv.innerHTML = txt
-          }
-          reader.readAsArrayBuffer(this.files[0])
-        },
-        false
-      );
 
 const MyApp = (() => {
     const go = new Go();
@@ -58,55 +33,37 @@ const MyApp = (() => {
         }
     }
 
-    function allocateMemoryForWasm(byteLength) {
-        // Assuming wasmModule is your instantiated Wasm module
-        const ptr = allocateMemory(byteLength);
-        console.log(ptr)
-        return ptr;
-    }
-
-    function copyArrayBufferToWasmMemory(arrayBuffer, ptr) {
-        if (!window.wasmInstance) {
-            console.error('WASM instance is not initialized.');
-            return;
-        }
-        // Get a view of the Wasm memory as a Uint8Array
-        const uint8Memory = new Uint8Array(window.wasmInstance.exports.mem.buffer);
-        // Create a Uint8Array from the ArrayBuffer to copy
-        const uint8Array = new Uint8Array(arrayBuffer);
-        // Copy the data into the Wasm memory
-        uint8Memory.set(uint8Array, ptr);
-    }
-
     function processImageFromCamera() {
-        document.getElementById('imageInput').addEventListener('change', async function(event) {
-            const file = event.target.files[0];
-            if (!file.type.match('image.*')) {
-                alert('Please select an image file.');
-                return;
-            }
-
-            const arrayBuffer = await file.arrayBuffer();
-            // Assume allocateMemoryForWasm and copyArrayBufferToWasmMemory are functions you've defined
-            // to handle memory management between JS and your Go WASM module. You'll need to implement these
-            // based on your application's memory management strategy for WASM.
-            const ptr = allocateMemoryForWasm(arrayBuffer.byteLength);
-            copyArrayBufferToWasmMemory(arrayBuffer, ptr);
-
-            // Now call the Go WASM function with the pointer and length as arguments
-            // Ensure processImage is correctly exposed from your Go code and callable here.
-            const result = processImage(file);
-            document.getElementById('imageInfo').textContent = result;
-
-            // Remember to free any allocated memory in your WASM module to avoid leaks
-        });
+        document.querySelector('#imageInput').addEventListener(
+        'change',
+        function() {
+          const reader = new FileReader()
+          reader.onload = function() {
+            // Converting the image to Unit8Array
+            const arrayBuffer = this.result,
+              array = new Uint8Array(arrayBuffer)
+            // Call wasm exported function
+            const txt = convert(
+              array,
+              JSON.stringify({
+                fixedWidth: 100,
+                colored: true,
+                fixedHeight: 40,
+              })
+            )
+            // Showing the ascii image in the browser
+            const cdiv = document.getElementById('console')
+            cdiv.innerHTML = txt
+          }
+          reader.readAsArrayBuffer(this.files[0])
+        },
+        false
+      )
     }
 
     return {
         init,
         processInputFunction,
-        allocateMemoryForWasm,
-        copyArrayBufferToWasmMemory,
         processImageFromCamera
     };
 })();

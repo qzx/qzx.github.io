@@ -7,7 +7,6 @@ import (
     _ "image/png"
     "github.com/subeshb1/wasm-go-image-to-ascii/convert"
     "github.com/robert-nix/ansihtml"
-    "fmt"
 )
 
 func convertImage(this js.Value, inputs []js.Value) interface{} {
@@ -23,17 +22,9 @@ func convertImage(this js.Value, inputs []js.Value) interface{} {
   converter := convert.NewImageConverter()
 
   asciiImage := converter.ImageFile2ASCIIString(inBuf, &convertOptions)
-  fmt.Println(asciiImage)
-
   asciiHTML := ansihtml.ConvertToHTML([]byte(asciiImage))
-  fmt.Println(string(asciiHTML))
 
   return string(asciiHTML)
-}
-
-// Exported function to allocate memory
-func allocateMemory(length int) []byte {
-    return make([]byte, length)
 }
 
 func main() {
