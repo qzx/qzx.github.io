@@ -104,7 +104,6 @@ const MyApp = (() => {
 
     return {
         init,
-        callGoFunctionz,
         processInputFunction,
         allocateMemoryForWasm,
         copyArrayBufferToWasmMemory,
