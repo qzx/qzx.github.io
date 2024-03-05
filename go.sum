@@ -21,6 +21,8 @@ github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/
 github.com/subeshb1/wasm-go-image-to-ascii v0.0.0-20200725121413-d828986df340 h1:EN1NUPDAdhpWv9zNNdbovzqfJaRmnrwWaq0huRzQp9I=
 github.com/subeshb1/wasm-go-image-to-ascii v0.0.0-20200725121413-d828986df340/go.mod h1:A2X7CsJFb8jEdYaWeCbs2HydXC69J4Iaw4DM+bly5iw=
 github.com/wayneashleyberry/terminal-dimensions v1.0.0/go.mod h1:PW2XrtV6KmKOPhuf7wbtcmw1/IFnC39mryRET2XbxeE=
+github.com/xor-gate/goexif2 v1.1.0 h1:OvTZ5iEvsDhRWFjV5xY3wT7uHFna28nSSP7ucau+cXQ=
+github.com/xor-gate/goexif2 v1.1.0/go.mod h1:eRjn3VSkAwpNpxEx/CGmd0zg0JFGL3akrSMxnJ581AY=
 golang.org/x/sys v0.0.0-20181019160139-8e24a49d80f8/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c h1:dUUwHk2QECo/6vqA44rthZ8ie2QXMNeKRTHCNY2nXvo=

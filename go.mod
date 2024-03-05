@@ -5,6 +5,7 @@ go 1.21.1
 require (
 	github.com/robert-nix/ansihtml v1.0.1
 	github.com/subeshb1/wasm-go-image-to-ascii v0.0.0-20200725121413-d828986df340
+	github.com/xor-gate/goexif2 v1.1.0
 )
 
 require (

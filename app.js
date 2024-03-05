@@ -43,7 +43,7 @@ const MyApp = (() => {
             const arrayBuffer = this.result,
               array = new Uint8Array(arrayBuffer)
             // Call wasm exported function
-            const txt = convert(
+            const txt = convertImage(
               array,
               JSON.stringify({
                 fixedWidth: 100,
