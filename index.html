@@ -16,15 +16,28 @@
 </head>
 <body>
     <h1>Hello, Go WebAssembly PWA!</h1>
-    <button id="callGoButton">Call Go Function</button>
-    <button id="effAroundButton">Eff around</button>
+    <pre
+        id="console"
+        style="background: black; color: white; overflow: scroll;"
+    ></pre>
+        <!-- Input to select file -->
+    <input type="file" name="imageInput" id="imageInput" capture="camera" accept="image/*" />
+
+    <br /><br />
+
     <input type="text" id="userInput" placeholder="Enter something...">
     <button id="processInputButton">Process Input</button>
     <p id="result"></p>
 
-    <button id="installButton" style="display: none;">Install PWA</button>
 
+    <br />
+
+    <input type="file" accept="image/*" capture="environment" id="imageInput" style="display: none;">
+    <button onclick="document.getElementById('imageInput').click();">Capture Image</button>
+    <p id="imageInfo"></p>
     
+    
+    <button id="installButton" style="display: none;">Install PWA</button>
     <script type="module">
         window.onload = () => MyApp.init();
     </script>
