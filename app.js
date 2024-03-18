@@ -33,6 +33,11 @@ const MyApp = (() => {
         }
     }
 
+    function captureLocationData() {
+        gpsdata = 'tempgps'
+        document.getElementById('gpsOut').textContent = gpsdata;
+    }
+
     function processImageFromCamera() {
         document.querySelector('#imageInput').addEventListener(
         'change',
@@ -64,7 +69,8 @@ const MyApp = (() => {
     return {
         init,
         processInputFunction,
-        processImageFromCamera
+        processImageFromCamera,
+        captureLocationData
     };
 })();
 

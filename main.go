@@ -6,16 +6,16 @@ import (
 	"image"
 	_ "image/jpeg"
 	_ "image/png"
-	"io"
+//	"io"
 	"syscall/js"
 
 	"github.com/robert-nix/ansihtml"
 	"github.com/subeshb1/wasm-go-image-to-ascii/convert"
 
-	"fmt"
+//	"fmt"
 
-	"github.com/xor-gate/goexif2/exif"
-	"github.com/xor-gate/goexif2/mknote"
+//	"github.com/xor-gate/goexif2/exif"
+//	"github.com/xor-gate/goexif2/mknote"
 )
 
 func convertImage(this js.Value, inputs []js.Value) interface{} {
@@ -33,22 +33,7 @@ func convertImage(this js.Value, inputs []js.Value) interface{} {
 	asciiImage := converter.ImageFile2ASCIIString(inBuf, &convertOptions)
 	asciiHTML := ansihtml.ConvertToHTML([]byte(asciiImage))
 
-	exif.RegisterParsers(mknote.All...)
-
-	imageFile, err := OpenImageFile(inBuf)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	x, err := exif.Decode(io.ReadSeeker(inBuf))
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	lat, long, _ := x.LatLong()
-	fmt.Println("lat, long: ", lat, ", ", long)
-
-	return string(asciiHTML)
+    return string(asciiHTML)
 }
 
 func OpenImageFile(imgByte []byte) (image.Image, error) {
