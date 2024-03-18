@@ -50,8 +50,7 @@ const MyApp = (() => {
   /* geolocation IS NOT available */
               console.log("Geolocation is not supported by this browser.");
         }
-        gpsdata = 'tempgps'
-        document.getElementById('gpsOut').textContent = gpsdata;
+        document.getElementById('gpsOut').textContent = "temp text";
     }
 
     function processImageFromCamera() {
