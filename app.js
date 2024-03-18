@@ -79,6 +79,7 @@ window.MyApp = MyApp;
 document.addEventListener('DOMContentLoaded', (event) => {
     MyApp.init();
     MyApp.processImageFromCamera();
+    MyApp.captureLocationData();
     document.getElementById('processInputButton').addEventListener('click', MyApp.processInputFunction);
     document.getElementById('installButton').addEventListener('click', (e) => {
         // Hide the install button
