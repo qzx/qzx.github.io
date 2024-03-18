@@ -9,7 +9,47 @@ window.addEventListener('beforeinstallprompt', (e) => {
   document.getElementById('installButton').style.display = 'block';
 });
 
+async function getLocation() {
+  try {
+    // Check if the Geolocation permission has been granted
+    const permissionStatus = await navigator.permissions.query({ name: "geolocation" });
 
+    // Handle the permission state
+    if (permissionStatus.state === 'granted') {
+      // Permission was already granted
+      getCurrentLocation();
+    } else if (permissionStatus.state === 'prompt') {
+      // Permission needs to be prompted for, ask for it then get location
+      getCurrentLocation();
+    } else if (permissionStatus.state === 'denied') {
+      // Permission was denied
+      console.error("Location permission has been denied. Unable to retrieve location.");
+    }
+
+    // Listen for changes on permission
+    permissionStatus.onchange = () => {
+      console.log(`The permission state for geolocation has changed to ${permissionStatus.state}`);
+    };
+  } catch (error) {
+    console.error(`Error checking location permission: ${error}`);
+  }
+}
+
+function getCurrentLocation() {
+  if ("geolocation" in navigator) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+    }, function(error) {
+      console.error("Error obtaining location: " + error.message);
+    }, {
+      enableHighAccuracy: true
+    });
+  } else {
+    console.log("Geolocation is not supported by this browser.");
+  }
+}
 
 const MyApp = (() => {
     const go = new Go();
@@ -34,22 +74,7 @@ const MyApp = (() => {
     }
 
     function captureLocationData() {
-        
-        if ("geolocation" in navigator) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-    const latitude = position.coords.latitude;
-    const longitude = position.coords.longitude;
-    // You can now use these coordinates to associate with the picture taken.
-    console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
-  }, function(error) {
-    console.error("Error Code = " + error.code + " - " + error.message);
-  }, {
-    enableHighAccuracy: true // This asks the device to use the best method to get the location
-  });
-} else {
-  /* geolocation IS NOT available */
-              console.log("Geolocation is not supported by this browser.");
-        }
+        getLocation();
         document.getElementById('gpsOut').textContent = "temp text";
     }
 
