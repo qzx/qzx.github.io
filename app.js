@@ -34,6 +34,22 @@ const MyApp = (() => {
     }
 
     function captureLocationData() {
+        
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+    // You can now use these coordinates to associate with the picture taken.
+    console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+  }, function(error) {
+    console.error("Error Code = " + error.code + " - " + error.message);
+  }, {
+    enableHighAccuracy: true // This asks the device to use the best method to get the location
+  });
+} else {
+  /* geolocation IS NOT available */
+              console.log("Geolocation is not supported by this browser.");
+        }
         gpsdata = 'tempgps'
         document.getElementById('gpsOut').textContent = gpsdata;
     }
