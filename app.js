@@ -41,6 +41,7 @@ function getCurrentLocation() {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
       console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+      document.getElementById('gpsOut').textContent = `${latitude}, ${longitude}`;
     }, function(error) {
       console.error("Error obtaining location: " + error.message);
     }, {
@@ -75,7 +76,6 @@ const MyApp = (() => {
 
     function captureLocationData() {
         getLocation();
-        document.getElementById('gpsOut').textContent = "temp text";
     }
 
     function processImageFromCamera() {
