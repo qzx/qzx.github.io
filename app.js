@@ -73,10 +73,7 @@ const MyApp = (() => {
     var video = document.createElement("video");
     var canvasElement = document.getElementById("canvas");
     var canvas = canvasElement.getContext("2d");
-    var loadingMessage = document.getElementById("loadingMessage");
-    var outputContainer = document.getElementById("output");
-    var outputMessage = document.getElementById("outputMessage");
-    var outputData = document.getElementById("outputData");
+    var outputData = document.getElementById("uuid");
 
     function drawLine(begin, end, color) {
       canvas.beginPath();
@@ -98,11 +95,8 @@ const MyApp = (() => {
       });
 
     function tick() {
-      loadingMessage.innerText = "⌛ Loading video...";
       if (video.readyState === video.HAVE_ENOUGH_DATA) {
-        loadingMessage.hidden = true;
         canvasElement.hidden = false;
-        outputContainer.hidden = false;
 
         canvasElement.height = video.videoHeight;
         canvasElement.width = video.videoWidth;
@@ -143,12 +137,10 @@ const MyApp = (() => {
             code.location.topLeftCorner,
             "#FF3B58",
           );
-          outputMessage.hidden = true;
-          outputData.parentElement.hidden = false;
           outputData.innerText = code.data;
+          canvasElement.hidden = true;
           return;
         } else {
-          outputMessage.hidden = false;
           outputData.parentElement.hidden = true;
         }
       }
