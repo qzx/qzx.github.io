@@ -2,7 +2,7 @@
 const CACHE_NAME = 'v1';
 // Specify the files to cache
 const urlsToCache = [
-  '/',
+//  '/',
 //  '/index.html',
   '/main.wasm',
   '/wasm_exec.js',
