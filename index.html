@@ -13,6 +13,7 @@
     <link rel="manifest" href="manifest.json">
     <script type="module" src="wasm_exec.js"></script>
     <script type="module" src="app.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/jsqr@latest/dist/jsQR.js"></script>
 </head>
 <body>
     <h1>Hello, Go WebAssembly PWA!</h1>
@@ -27,6 +28,14 @@
 
     <input type="text" id="userInput" placeholder="Enter something...">
     <button id="processInputButton">Process Input</button>
+    <button id="scanQRButton">Scan QR</button>
+    <br>
+    <div id="loadingMessage">🎥 Unable to access video stream (please make sure you have a webcam enabled)</div>
+    <canvas id="canvas" hidden></canvas>
+  <div id="output" hidden>
+    <div id="outputMessage">No QR code detected.</div>
+    <div hidden><b>Data:</b> <span id="outputData"></span></div>
+  </div>
     <p id="result"></p>
     <br>
     <p id="gpsOut"></p>
