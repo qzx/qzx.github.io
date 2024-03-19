@@ -141,7 +141,7 @@ const MyApp = (() => {
           canvasElement.hidden = true;
           return;
         } else {
-          outputData.parentElement.hidden = true;
+          outputData.innerText = "Searching for QR Code";
         }
       }
       requestAnimationFrame(tick);
