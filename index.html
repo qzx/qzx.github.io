@@ -9,38 +9,33 @@
     <meta name="apple-mobile-web-app-title" content="Your App Name">
     <link rel="apple-touch-icon" href="/icon-256x256.png">
 
-    <title>Go WebAssembly PWA</title>
+    <title>Mangrove tracker</title>
     <link rel="manifest" href="manifest.json">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/jsqr@latest/dist/jsQR.js"></script>
     <script type="module" src="wasm_exec.js"></script>
     <script type="module" src="app.js"></script>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/jsqr@latest/dist/jsQR.js"></script>
 </head>
 <body>
-    <h1>Hello, Go WebAssembly PWA!</h1>
+    <h1>Mangrove tracking app</h1>
+    <button id="installButton" style="display: none;">Install PWA</button>
     <pre
         id="console"
         style="background: black; color: white; overflow: scroll;"
     ></pre>
-        <!-- Input to select file -->
-    <input type="file" name="imageInput" id="imageInput" capture="camera" accept="image/*" />
+    <button id="captureMangrove">Capture Mangrove</button>
 
-    <br /><br />
+    <p id="lat"></p>
+    <p id="long"></p>
+    <p id="uuid"></p>
 
-    <input type="text" id="userInput" placeholder="Enter something...">
-    <button id="processInputButton">Process Input</button>
-    <button id="scanQRButton">Scan QR</button>
     <br>
     <div id="loadingMessage">🎥 Unable to access video stream (please make sure you have a webcam enabled)</div>
     <canvas id="canvas" hidden style="width: 100%"></canvas>
-  <div id="output" hidden>
-    <div id="outputMessage">No QR code detected.</div>
-    <div hidden><b>Data:</b> <span id="outputData"></span></div>
-  </div>
-    <p id="result"></p>
+    <div id="output" hidden>
+        <div id="outputMessage">No QR code detected.</div>
+        <div hidden><b>Data:</b> <span id="outputData"></span></div>
+    </div>
     <br>
-    <p id="gpsOut"></p>
-    <br>
-    <button id="installButton" style="display: none;">Install PWA</button>
     <script type="module">
         window.onload = () => MyApp.init();
     </script>
