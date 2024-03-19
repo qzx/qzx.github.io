@@ -6,17 +6,45 @@ import (
 	"image"
 	_ "image/jpeg"
 	_ "image/png"
-//	"io"
+
+	//	"io"
 	"syscall/js"
 
 	"github.com/robert-nix/ansihtml"
 	"github.com/subeshb1/wasm-go-image-to-ascii/convert"
-
-//	"fmt"
-
-//	"github.com/xor-gate/goexif2/exif"
-//	"github.com/xor-gate/goexif2/mknote"
+	"fmt"
+	// "github.com/xor-gate/goexif2/exif"
+	// "github.com/xor-gate/goexif2/mknote"
 )
+
+type MangroveOptions struct {
+    Latitude float32 `json:"latitude"`
+    Longitude float32 `json:"longitude"`
+    UUID string `json:"uuid"`
+}
+
+var DefaultOptions = MangroveOptions{
+    Latitude: 0, 
+    Longitude: 0, 
+    UUID: "N/A",
+}
+
+func processMangrove(this js.Value, inputs []js.Value) interface{} {
+    imageArr := inputs[0]
+    options := inputs[1].String()
+    inBuf := make([]uint8, imageArr.Get("byteLength").Int())
+    js.CopyBytesToGo(inBuf, imageArr)
+
+    mangroveOptions := MangroveOptions{}
+    err := json.Unmarshal([]byte(options), &mangroveOptions)
+    if err != nil {
+        mangroveOptions = DefaultOptions
+    }
+
+    lenOrSmthn := len(inBuf)
+
+    return fmt.Sprintf("%v : uuid: %v", lenOrSmthn, mangroveOptions.UUID)
+}
 
 func convertImage(this js.Value, inputs []js.Value) interface{} {
 	imageArr := inputs[0]
@@ -56,6 +84,7 @@ func main() {
 	}))
 
 	js.Global().Set("convertImage", js.FuncOf(convertImage))
+    js.Global().Set("processMangrove", js.FuncOf(processMangrove))
 
 	<-make(chan bool)
 }

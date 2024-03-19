@@ -75,15 +75,6 @@ const MyApp = (() => {
     var canvas = canvasElement.getContext("2d");
     var outputData = document.getElementById("uuid");
 
-    function drawLine(begin, end, color) {
-      canvas.beginPath();
-      canvas.moveTo(begin.x, begin.y);
-      canvas.lineTo(end.x, end.y);
-      canvas.lineWidth = 4;
-      canvas.strokeStyle = color;
-      canvas.stroke();
-    }
-
     // Use facingMode: environment to attemt to get the front camera on phones
     navigator.mediaDevices
       .getUserMedia({ video: { facingMode: "environment" } })
@@ -97,7 +88,6 @@ const MyApp = (() => {
     function tick() {
       if (video.readyState === video.HAVE_ENOUGH_DATA) {
         canvasElement.hidden = false;
-
         canvasElement.height = video.videoHeight;
         canvasElement.width = video.videoWidth;
         canvas.drawImage(
@@ -117,26 +107,6 @@ const MyApp = (() => {
           inversionAttempts: "dontInvert",
         });
         if (code) {
-          drawLine(
-            code.location.topLeftCorner,
-            code.location.topRightCorner,
-            "#FF3B58",
-          );
-          drawLine(
-            code.location.topRightCorner,
-            code.location.bottomRightCorner,
-            "#FF3B58",
-          );
-          drawLine(
-            code.location.bottomRightCorner,
-            code.location.bottomLeftCorner,
-            "#FF3B58",
-          );
-          drawLine(
-            code.location.bottomLeftCorner,
-            code.location.topLeftCorner,
-            "#FF3B58",
-          );
           outputData.innerText = code.data;
           canvasElement.hidden = true;
           return;
@@ -151,12 +121,47 @@ const MyApp = (() => {
   async function captureMangrove() {
     await captureLocationData();
     captureQR();
+    document.getElementById("imageInput").hidden = false;
+  }
+
+  function processImageFromCamera() {
+    const imageInput = document.getElementById("imageInput");
+    imageInput.addEventListener(
+      "change",
+      function () {
+        const reader = new FileReader();
+        reader.onload = function () {
+          // Converting the image to Unit8Array
+          const arrayBuffer = this.result,
+            array = new Uint8Array(arrayBuffer);
+          // Call wasm exported function
+          const lat = document.getElementById("lat").innerText;
+          const long = document.getElementById("long").innerText;
+          const uuid = document.getElementById("uuid").innerText;
+          const txt = convertImage(
+            array,
+            JSON.stringify({
+              latitude: lat,
+              longitude: long,
+              uuid: uuid,
+            }),
+          );
+          // Showing the ascii image in the browser
+          const cdiv = document.getElementById("console");
+          cdiv.hidden = false;
+          cdiv.innerText = txt;
+        };
+        reader.readAsArrayBuffer(this.files[0]);
+      },
+      false,
+    );
   }
 
   return {
     init,
     captureQR,
     captureLocationData,
+    processImageFromCamera,
     captureMangrove,
   };
 })();
@@ -165,6 +170,7 @@ window.MyApp = MyApp;
 
 document.addEventListener("DOMContentLoaded", (event) => {
   MyApp.init();
+  MyApp.processImageFromCamera();
   document
     .getElementById("captureMangrove")
     .addEventListener("click", MyApp.captureMangrove);

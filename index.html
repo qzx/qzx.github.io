@@ -27,11 +27,10 @@
     <p id="lat"></p>
     <p id="long"></p>
     <p id="uuid"></p>
+    <input type="file" name="imageInput" id="imageInput" capture="camera" accept="image/*" hidden>
 
-    <br>
-    <div id="loadingMessage">🎥 Unable to access video stream (please make sure you have a webcam enabled)</div>
     <canvas id="canvas" hidden style="width: 100%"></canvas>
-    <br>
+    <p id="console" hidden></p>
     <script type="module">
         window.onload = () => MyApp.init();
     </script>
