@@ -132,6 +132,7 @@ func processMangrove(this js.Value, inputs []js.Value) interface{} {
     return nil
 }
 
+//export loadScreen
 func loadScreen(this js.Value, inputs []js.Value) interface{} {
     screenName := inputs[0].String()
     renderScreen(screenName)
@@ -150,6 +151,7 @@ func OpenImageFile(imgByte []byte) (image.Image, error) {
 func main() {
     initTemplates()
 
+    fmt.Println("WHAT THE DICK!")
     js.Global().Set("processMangrove", js.FuncOf(processMangrove))
     js.Global().Set("loadMangrove", js.FuncOf(loadMangrove))
     js.Global().Set("loadScreen", js.FuncOf(loadScreen))
