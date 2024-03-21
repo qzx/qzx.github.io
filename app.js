@@ -20,8 +20,6 @@ const MyApp = (() => {
 
     window.wasmInstance = instance;
     await checkGeolocationPermission();
-
-    loadScreen("home");
   }
 
   function getCurrentLocation() {
