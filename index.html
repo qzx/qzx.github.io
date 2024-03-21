@@ -8,6 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="Your App Name">
     <link rel="apple-touch-icon" href="/icon-256x256.png">
+    <link rel="stylesheet" type="text/css" href="styles.css">
 
     <title>Mangrove tracker</title>
     <link rel="manifest" href="manifest.json">
@@ -18,19 +19,11 @@
 <body>
     <h1>Mangrove tracking app</h1>
     <button id="installButton" style="display: none;">Install PWA</button>
-    <pre
-        id="console"
-        style="background: black; color: white; overflow: scroll;"
-    ></pre>
-    <button id="captureMangrove">Capture Mangrove</button>
-
-    <p id="lat"></p>
-    <p id="long"></p>
-    <p id="uuid"></p>
-    <input type="file" name="imageInput" id="imageInput" capture="camera" accept="image/*" hidden>
-
-    <canvas id="canvas" hidden style="width: 100%"></canvas>
-    <p id="console" hidden></p>
+<div id="screen_container">
+    <div id="screen_contents">
+        <p id="start"> LOADING </p>
+    </div>
+</div>
     <script type="module">
         window.onload = () => MyApp.init();
     </script>

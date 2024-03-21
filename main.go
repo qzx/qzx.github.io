@@ -7,26 +7,110 @@ import (
 	_ "image/jpeg"
 	_ "image/png"
 
-	//	"io"
 	"syscall/js"
 
-	"github.com/robert-nix/ansihtml"
-	"github.com/subeshb1/wasm-go-image-to-ascii/convert"
 	"fmt"
-	// "github.com/xor-gate/goexif2/exif"
-	// "github.com/xor-gate/goexif2/mknote"
 )
 
-type MangroveOptions struct {
-    Latitude float32 `json:"latitude"`
-    Longitude float32 `json:"longitude"`
+type GeoLocation struct {
+	Latitude  float64
+	Longitude float64
+	Error     error
+}
+
+type Mangrove struct {
+    Latitude float64 `json:"latitude"`
+    Longitude float64 `json:"longitude"`
+    Location GeoLocation
     UUID string `json:"uuid"`
 }
 
-var DefaultOptions = MangroveOptions{
-    Latitude: 0, 
-    Longitude: 0, 
+type ApplicationState struct {
+    UUID string `json:"uuid"`
+    nextScreen string
+    currentScreen string
+    previousScreen string
+}
+
+var DefaultOptions = Mangrove{
     UUID: "N/A",
+}
+
+func (x Mangrove) screenData() string {
+    screen, err := executeTemplateAsString("mangrove", x)
+    if err != nil {
+        return fmt.Sprintf("<p>ERROR: %v</p>", err.Error())
+    }
+    return screen
+}
+
+func homeScreenString() string {
+    screen, err := executeTemplateAsString("main", nil)
+    if err != nil {
+        return fmt.Sprintf("ERROR: %v", err.Error())
+    }
+    return screen
+}
+
+func mangroveScreenString() string {
+    pElement := js.Global().Get("document").Call("getElementById", "uuid")
+
+	// Get the innerText of the <p> element
+	uuid := pElement.Get("innerText").String()
+    mangrove := Mangrove{
+        UUID: uuid,
+    }
+    return mangrove.screenData()
+}
+
+
+func clearScreen() {
+	document := js.Global().Get("document")
+	screenContainer := document.Call("getElementById", "screen_container")
+	screenContents := document.Call("getElementById", "screen_contents")
+
+	if screenContents.Truthy() {
+		screenContainer.Call("removeChild", screenContents)
+	}
+}
+
+func updateScreen(screenString string) {
+    document := js.Global().Get("document")
+    screenContainer := document.Call("getElementById", "screen_container")
+
+    clearScreen()
+
+    newScreenContents := document.Call("createElement", "div")
+	newScreenContents.Set("id", "screen_contents")
+	newScreenContents.Set("innerHTML", screenString)
+
+	screenContainer.Call("appendChild", newScreenContents)
+
+}
+
+func renderScreen(screen string) {
+    var screenString string
+    switch s := screen; s {
+
+    case "home":
+        screenString = homeScreenString()
+    case "mangrove":
+        screenString = mangroveScreenString()
+    default:
+        screenString = homeScreenString()
+    }
+    updateScreen(screenString)
+}
+
+func loadMangrove(this js.Value, inputs []js.Value) interface{} {
+    uuid := inputs[0].String()
+
+    mangrove := Mangrove{
+        UUID: uuid,
+    }
+
+    updateScreen(mangrove.screenData())
+    return nil
 }
 
 func processMangrove(this js.Value, inputs []js.Value) interface{} {
@@ -34,34 +118,24 @@ func processMangrove(this js.Value, inputs []js.Value) interface{} {
     options := inputs[1].String()
     inBuf := make([]uint8, imageArr.Get("byteLength").Int())
     js.CopyBytesToGo(inBuf, imageArr)
+    fmt.Println(options)
 
-    mangroveOptions := MangroveOptions{}
-    err := json.Unmarshal([]byte(options), &mangroveOptions)
+    mangrove := Mangrove{}
+    err := json.Unmarshal([]byte(options), &mangrove)
     if err != nil {
-        mangroveOptions = DefaultOptions
+        mangrove = DefaultOptions
+        fmt.Println(err.Error())
     }
 
-    lenOrSmthn := len(inBuf)
-
-    return fmt.Sprintf("%v : uuid: %v", lenOrSmthn, mangroveOptions.UUID)
+    clearScreen()
+    updateScreen(mangrove.screenData())
+    return nil
 }
 
-func convertImage(this js.Value, inputs []js.Value) interface{} {
-	imageArr := inputs[0]
-	options := inputs[1].String()
-	inBuf := make([]uint8, imageArr.Get("byteLength").Int())
-	js.CopyBytesToGo(inBuf, imageArr)
-	convertOptions := convert.Options{}
-	err := json.Unmarshal([]byte(options), &convertOptions)
-	if err != nil {
-		convertOptions = convert.DefaultOptions
-	}
-	converter := convert.NewImageConverter()
-
-	asciiImage := converter.ImageFile2ASCIIString(inBuf, &convertOptions)
-	asciiHTML := ansihtml.ConvertToHTML([]byte(asciiImage))
-
-    return string(asciiHTML)
+func loadScreen(this js.Value, inputs []js.Value) interface{} {
+    screenName := inputs[0].String()
+    renderScreen(screenName)
+    return nil
 }
 
 func OpenImageFile(imgByte []byte) (image.Image, error) {
@@ -74,17 +148,11 @@ func OpenImageFile(imgByte []byte) (image.Image, error) {
 }
 
 func main() {
-	js.Global().Set("processInput", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		if len(args) == 0 {
-			return "No input provided"
-		}
-		input := args[0].String() // Convert the first argument to a string
-		// Process the input or just return it with a message
-		return "We have haxzors: " + input
-	}))
+    initTemplates()
 
-	js.Global().Set("convertImage", js.FuncOf(convertImage))
     js.Global().Set("processMangrove", js.FuncOf(processMangrove))
+    js.Global().Set("loadMangrove", js.FuncOf(loadMangrove))
+    js.Global().Set("loadScreen", js.FuncOf(loadScreen))
 
 	<-make(chan bool)
 }

@@ -19,57 +19,59 @@ const MyApp = (() => {
     go.run(instance);
 
     window.wasmInstance = instance;
+    await checkGeolocationPermission();
+
+    loadScreen("home");
   }
 
   function getCurrentLocation() {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        function (position) {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-          console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
-          document.getElementById("lat").textContent = latitude;
-          document.getElementById("long").textContent = longitude;
-        },
-        function (error) {
-          console.error("Error obtaining location: " + error.message);
-        },
-        {
-          enableHighAccuracy: true,
-        },
-      );
-    } else {
-      console.log("Geolocation is not supported by this browser.");
-    }
+    return new Promise((resolve) => {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          function (position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+            resolve({ latitude, longitude }); // Resolve the promise with the coordinates
+          },
+          function (error) {
+            console.error("Error obtaining location: " + error.message);
+            resolve({ latitude: 0.0, longitude: 0.0 }); // Resolve with 0,0 on error
+          },
+          { enableHighAccuracy: true },
+        );
+      } else {
+        console.log("Geolocation is not supported by this browser.");
+        resolve({ latitude: 0.0, longitude: 0.0 }); // Resolve with 0,0 if geolocation is not supported
+      }
+    });
   }
 
-  async function captureLocationData() {
+  async function checkGeolocationPermission() {
     try {
       const permissionStatus = await navigator.permissions.query({
         name: "geolocation",
       });
-
-      if (permissionStatus.state === "granted") {
-        getCurrentLocation();
-      } else if (permissionStatus.state === "prompt") {
-        getCurrentLocation();
-      } else if (permissionStatus.state === "denied") {
-        console.error(
-          "Location permission has been denied. Unable to retrieve location.",
-        );
-      }
 
       permissionStatus.onchange = () => {
         console.log(
           `The permission state for geolocation has changed to ${permissionStatus.state}`,
         );
       };
+
+      if (permissionStatus.state === "denied") {
+        console.error(
+          "Location permission has been denied. Unable to retrieve location.",
+        );
+      } else {
+        getCurrentLocation();
+      }
     } catch (error) {
       console.error(`Error checking location permission: ${error}`);
     }
   }
 
-  function captureQR() {
+  function openMangrove() {
     var video = document.createElement("video");
     var canvasElement = document.getElementById("canvas");
     var canvas = canvasElement.getContext("2d");
@@ -107,9 +109,8 @@ const MyApp = (() => {
           inversionAttempts: "dontInvert",
         });
         if (code) {
-          outputData.innerText = code.data;
-          canvasElement.hidden = true;
-          return;
+            loadMangrove(code)
+            return
         } else {
           outputData.innerText = "Searching for QR Code";
         }
@@ -118,62 +119,56 @@ const MyApp = (() => {
     }
   }
 
-  async function captureMangrove() {
-    await captureLocationData();
-    captureQR();
-    document.getElementById("imageInput").hidden = false;
+  function emulateMangrove() {
+    loadMangrove("d7b51511-442c-44d4-b66c-a98a07901b0e")
   }
 
-  function processImageFromCamera() {
-    const imageInput = document.getElementById("imageInput");
-    imageInput.addEventListener(
-      "change",
-      function () {
-        const reader = new FileReader();
-        reader.onload = function () {
-          // Converting the image to Unit8Array
-          const arrayBuffer = this.result,
-            array = new Uint8Array(arrayBuffer);
-          // Call wasm exported function
-          const lat = document.getElementById("lat").innerText;
-          const long = document.getElementById("long").innerText;
-          const uuid = document.getElementById("uuid").innerText;
-          const txt = convertImage(
+  function imageProcessor(event) {
+    const reader = new FileReader();
+    reader.onload = function () {
+      const arrayBuffer = this.result;
+      const array = new Uint8Array(arrayBuffer);
+      const uuid = document.getElementById("uuid").innerText;
+      let latitude = 0.0;
+      let longitude = 0.0;
+      getCurrentLocation()
+        .then(({ latitude: lat, longitude: lng }) => {
+          latitude = parseFloat(lat);
+          longitude = parseFloat(lng);
+          console.log(`Got Latitude: ${latitude}, Longitude: ${longitude}`);
+          processMangrove(
             array,
             JSON.stringify({
-              latitude: lat,
-              longitude: long,
               uuid: uuid,
+              latitude: latitude,
+              longitude: longitude,
             }),
           );
-          // Showing the ascii image in the browser
-          const cdiv = document.getElementById("console");
-          cdiv.hidden = false;
-          cdiv.innerText = txt;
-        };
-        reader.readAsArrayBuffer(this.files[0]);
-      },
-      false,
-    );
+        })
+        .catch((error) => {
+          console.error("An error occured: ", error);
+        });
+    };
+    reader.readAsArrayBuffer(event.target.files[0]);
+  }
+
+
+  function homeScreen() {
+    loadScreen("home");
   }
 
   return {
     init,
-    captureQR,
-    captureLocationData,
-    processImageFromCamera,
-    captureMangrove,
+    imageProcessor,
+    openMangrove,
+    emulateMangrove,
+    homeScreen,
   };
 })();
 
 window.MyApp = MyApp;
 
 document.addEventListener("DOMContentLoaded", (event) => {
-  MyApp.init();
-  MyApp.processImageFromCamera();
-  document
-    .getElementById("captureMangrove")
-    .addEventListener("click", MyApp.captureMangrove);
   document.getElementById("installButton").addEventListener("click", (e) => {
     e.target.style.display = "none";
     deferredPrompt.prompt();

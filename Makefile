@@ -11,7 +11,7 @@ PORT=9090
 
 # Compile the Go WebAssembly module
 compile:
-	GOOS=js GOARCH=wasm $(GOBUILD) -o $(BINARY_NAME) main.go
+	GOOS=js GOARCH=wasm $(GOBUILD) -o $(BINARY_NAME) .
 	cp "$(shell go env GOROOT)/misc/wasm/wasm_exec.js" .
 
 # Install dependencies (if any)
