@@ -169,6 +169,7 @@ const MyApp = (() => {
 window.MyApp = MyApp;
 
 document.addEventListener("DOMContentLoaded", (event) => {
+  MyApp.init();
   document.getElementById("installButton").addEventListener("click", (e) => {
     e.target.style.display = "none";
     deferredPrompt.prompt();
