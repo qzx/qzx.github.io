@@ -149,12 +149,12 @@ func OpenImageFile(imgByte []byte) (image.Image, error) {
 }
 
 func main() {
-    initTemplates()
 
     fmt.Println("WHAT THE DICK!")
     js.Global().Set("processMangrove", js.FuncOf(processMangrove))
     js.Global().Set("loadMangrove", js.FuncOf(loadMangrove))
     js.Global().Set("loadScreen", js.FuncOf(loadScreen))
 
+    initTemplates()
 	<-make(chan bool)
 }
