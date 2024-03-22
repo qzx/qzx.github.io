@@ -20,6 +20,8 @@ const MyApp = (() => {
 
     window.wasmInstance = instance;
     await checkGeolocationPermission();
+
+    loadScreen("home");
   }
 
   function getCurrentLocation() {
@@ -73,7 +75,7 @@ const MyApp = (() => {
     var video = document.createElement("video");
     var canvasElement = document.getElementById("canvas");
     var canvas = canvasElement.getContext("2d");
-    var outputData = document.getElementById("uuid");
+    var outputData = document.getElementById("status");
 
     // Use facingMode: environment to attemt to get the front camera on phones
     navigator.mediaDevices

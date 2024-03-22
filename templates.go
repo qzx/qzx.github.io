@@ -13,6 +13,7 @@ const mainPageTemplate = `
 <pre id="console" style="background: black; color: white; overflow: scroll;"></pre>
 <p id="captureMangrove" onClick="MyApp.openMangrove()" class="takki">Capture Mangrove</p>
 <p id="captureDev" onClick="MyApp.emulateMangrove()" class="takki">Dev capture</p>
+<p id="status"></p>
 
 <canvas id="canvas" hidden style="width: 100%"></canvas>
 `

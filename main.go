@@ -150,7 +150,7 @@ func OpenImageFile(imgByte []byte) (image.Image, error) {
 
 func main() {
 
-    fmt.Println("WHAT THE DICK!")
+    fmt.Println("run!")
     js.Global().Set("processMangrove", js.FuncOf(processMangrove))
     js.Global().Set("loadMangrove", js.FuncOf(loadMangrove))
     js.Global().Set("loadScreen", js.FuncOf(loadScreen))
