@@ -17,12 +17,13 @@
     <script type="module" src="app.js"></script>
 </head>
 <body>
-    <h1>Mangrove tracking app</h1>
-    <button id="installButton" style="display: none;">Install PWA</button>
-<div id="screen_container">
-    <div id="screen_contents">
-        <p id="start" onClick="MyApp.homeScreen()"> LOADING </p>
+    <div id="loadingOverlay" style="display: flex;">
+        <div class="loader"></div>
+        <p>Loading...</p>
     </div>
+    <h1>Mangrove tracking app</h1>
+    <button id="installButton" class="styleButton" style="display: none;">Install PWA</button>
+<div id="screen_container">
 </div>
     <script type="module">
         window.onload = () => MyApp.init();

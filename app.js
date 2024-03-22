@@ -131,6 +131,7 @@ const MyApp = (() => {
       const uuid = document.getElementById("uuid").innerText;
       let latitude = 0.0;
       let longitude = 0.0;
+      document.getElementById('loadingOverlay').style.display = 'flex';
       getCurrentLocation()
         .then(({ latitude: lat, longitude: lng }) => {
           latitude = parseFloat(lat);
