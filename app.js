@@ -109,7 +109,7 @@ const MyApp = (() => {
           inversionAttempts: "dontInvert",
         });
         if (code) {
-            loadMangrove(code)
+            loadMangrove(code.data)
             return
         } else {
           outputData.innerText = "Searching for QR Code";
